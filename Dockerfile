@@ -14,8 +14,13 @@ RUN apt-get -qy dist-upgrade
 
 # Dependencies for the client .deb
 
-RUN apt-get install -qy curl sudo pulseaudio apt-utils apt-transport-https \
-    libatk-bridge2.0-0 libcups2 libgtk-3-0 libnspr4 libnss3 libxss1 gpg libsecret-1-0
+RUN apt-get install -qy  --no-install-recommends curl ca-certificates sudo
+
+RUN apt-get install -qy  --no-install-recommends \
+   libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libappindicator3-1 libsecret-1-0 libx11-xcb1 libxcb-dri3-0 libdrm2 libgbm1 libasound2
+
+#    pulseaudio apt-utils apt-transport-https \
+#    libatk-bridge2.0-0 libcups2 libgtk-3-0 libnspr4 libnss3 libxss1 gpg libsecret-1-0
 
 #  libasound2 libcairo2 libcups2 libgdk-pixbuf2.0-0 \
 # libpango-1.0-0 libpangocairo-1.0-0 \
@@ -30,16 +35,16 @@ RUN apt-get install -qy curl sudo pulseaudio apt-utils apt-transport-https \
 #   libxcb-keysyms1 libxcb-xtest0 ibus ibus-gtk \
 #   libnss3 libxss1 xcompmgr
 
-ARG TEAMS_URL="https://go.microsoft.com/fwlink/p/?LinkID=2112886&clcid=0x40c&culture=fr-fr&country=FR"
+ARG DRAWIO_DESKTOP_URL="https://github.com/jgraph/drawio-desktop/releases/download/v13.9.9/draw.io-amd64-13.9.9.deb"
 
 # Grab the client .deb
 # Install the client .deb
 # Cleanup
-RUN curl -sSL $TEAMS_URL -o /tmp/teams.deb
-RUN dpkg -i /tmp/teams.deb
+RUN curl -sSL $DRAWIO_DESKTOP_URL -o /tmp/draw.io.deb
+RUN dpkg -i /tmp/draw.io.deb
 RUN apt-get -f install
 
-COPY scripts/ /var/cache/teams/
+COPY scripts/ /var/cache/drawio/
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 

@@ -6,35 +6,35 @@ set -e
 USER_UID=${USER_UID:-1000}
 USER_GID=${USER_GID:-1000}
 
-TEAMS_USER=teams
+DRAWIO_USER=drawio
 
-install_teams() {
-  echo "Installing teams-wrapper..."
-  install -m 0755 /var/cache/teams/teams-wrapper /target/
-  echo "Installing teams..."
-  ln -sf teams-wrapper /target/teams
+install_drawio() {
+  echo "Installing drawio-wrapper..."
+  install -m 0755 /var/cache/drawio/drawio-wrapper /target/
+  echo "Installing drawio..."
+  ln -sf drawio-wrapper /target/drawio
 }
 
-uninstall_teams() {
-  echo "Uninstalling teams-wrapper..."
-  rm -rf /target/teams-wrapper
-  echo "Uninstalling teams..."
-  rm -rf /target/teams
+uninstall_drawio() {
+  echo "Uninstalling drawio-wrapper..."
+  rm -rf /target/drawio-wrapper
+  echo "Uninstalling drawio..."
+  rm -rf /target/drawio
 }
 
 create_user() {
   # create group with USER_GID
-  if ! getent group ${TEAMS_USER} >/dev/null; then
-    groupadd -f -g ${USER_GID} ${TEAMS_USER} >/dev/null 2>&1
+  if ! getent group ${DRAWIO_USER} >/dev/null; then
+    groupadd -f -g ${USER_GID} ${DRAWIO_USER} >/dev/null 2>&1
   fi
 
   # create user with USER_UID
-  if ! getent passwd ${TEAMS_USER} >/dev/null; then
+  if ! getent passwd ${DRAWIO_USER} >/dev/null; then
     adduser --disabled-login --uid ${USER_UID} --gid ${USER_GID} \
-      --gecos 'Teams' ${TEAMS_USER} >/dev/null 2>&1
+      --gecos 'Drawio' ${DRAWIO_USER} >/dev/null 2>&1
   fi
-  chown ${TEAMS_USER}:${TEAMS_USER} -R /home/${TEAMS_USER}
-  adduser ${TEAMS_USER} sudo
+  chown ${DRAWIO_USER}:${DRAWIO_USER} -R /home/${DRAWIO_USER}
+  adduser ${DRAWIO_USER} sudo
 }
 
 grant_access_to_video_devices() {
@@ -44,36 +44,38 @@ grant_access_to_video_devices() {
       VIDEO_GID=$(stat -c %g $device)
       VIDEO_GROUP=$(stat -c %G $device)
       if [[ ${VIDEO_GROUP} == "UNKNOWN" ]]; then
-        VIDEO_GROUP=teamsvideo
+        VIDEO_GROUP=drawiovideo
         groupadd -g ${VIDEO_GID} ${VIDEO_GROUP}
       fi
-      usermod -a -G ${VIDEO_GROUP} ${TEAMS_USER}
+      usermod -a -G ${VIDEO_GROUP} ${DRAWIO_USER}
       break
     fi
   done
 }
 
 launch_bash() {
-  cd /home/${TEAMS_USER}
-#  exec sudo -HEu ${TEAMS_USER} PULSE_SERVER=/run/pulse/native QT_GRAPHICSSYSTEM="native" xcompmgr -c -l0 -t0 -r0 -o.00 &
-#  exec sudo -HEu ${TEAMS_USER} PULSE_SERVER=/run/pulse/native QT_GRAPHICSSYSTEM="native" $@
-  exec sudo -HEu ${TEAMS_USER} PULSE_SERVER=/run/pulse/native QT_GRAPHICSSYSTEM="native" /bin/bash
+  cd /home/${DRAWIO_USER}
+#  exec sudo -HEu ${DRAWIO_USER} PULSE_SERVER=/run/pulse/native QT_GRAPHICSSYSTEM="native" xcompmgr -c -l0 -t0 -r0 -o.00 &
+#  exec sudo -HEu ${DRAWIO_USER} PULSE_SERVER=/run/pulse/native QT_GRAPHICSSYSTEM="native" $@
+  #exec sudo -HEu ${DRAWIO_USER} PULSE_SERVER=/run/pulse/native QT_GRAPHICSSYSTEM="native" /bin/bash
+  exec sudo -HEu ${DRAWIO_USER} /bin/bash
 }
 
 case "$1" in
   install)
-    install_teams
+    install_drawio
     ;;
   uninstall)
-    uninstall_teams
+    uninstall_drawio
     ;;
-  bash)
+  *|bash)
     create_user
-    grant_access_to_video_devices
+    #grant_access_to_video_devices
     echo "$1"
+    echo "launch draw.io by invoking 'drawio' at the bash prompt:"
     launch_bash $@
     ;;
-  *)
-    exec $@
-    ;;
+  # *)
+  #   exec $@
+  #;;
 esac

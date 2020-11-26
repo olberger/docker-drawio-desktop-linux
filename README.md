@@ -1,6 +1,6 @@
 This project is fully inspired of Marc Douchement's [docker-zoom-us](https://github.com/mdouchement/docker-zoom-us), which in turn was inspired by [sameersbn](https://github.com/sameersbn) [Skype](https://github.com/sameersbn/docker-skype)'s containerization.
 
-# olberger/docker-teams-linux
+# olberger/docker-drawio-linux
 
 # Introduction
 
@@ -13,22 +13,22 @@ The image uses [X11](http://www.x.org) and [Pulseaudio](http://www.freedesktop.o
 If you find this image useful here's how you can help:
 
 - Send a pull request with your awesome features and bug fixes
-- Help users resolve their [issues](https://github.com/olberger/docker-teams-linux/issues?q=is%3Aopen+is%3Aissue).
+- Help users resolve their [issues](https://github.com/olberger/docker-drawio-desktop-linux/issues?q=is%3Aopen+is%3Aissue).
 
 # Getting started
 
 ## Installation
 
-Automated builds of the image are available on [Dockerhub](https://hub.docker.com/r/olberger/docker-teams-linux) and is the recommended method of installation.
+Automated builds of the image are available on [Dockerhub](https://hub.docker.com/r/olberger/docker-drawio-desktop-linux) and is the recommended method of installation.
 
 ```bash
-docker pull olberger/docker-teams-linux:latest
+docker pull olberger/docker-drawio-desktop-linux:latest
 ```
 
 Alternatively you can build the image yourself.
 
 ```bash
-docker build -t olberger/docker-teams-linux github.com/olberger/docker-teams-linux
+docker build -t olberger/docker-drawio-desktop-linux github.com/olberger/docker-drawio-desktop-linux
 ```
 
 With the image locally available, install the wrapper scripts by running the following as root:
@@ -36,29 +36,30 @@ With the image locally available, install the wrapper scripts by running the fol
 ```bash
 docker run -it --rm \
   --volume /usr/local/bin:/target \
-  olberger/docker-teams-linux:latest install
+  olberger/docker-drawio-desktop-linux:latest install
 ```
 
-This will install a wrapper script to launch `teams`.
+This will install a wrapper script to launch `drawio`.
 
-## Starting Teams
+## Starting Drawio
 
-Launch the teams-wrapper script to enter a shell inside the Docker container
+Launch the drawio-wrapper script to enter a shell inside the Docker container
 
 ```bash
-teams-wrapper bash
+drawio-wrapper bash
 ```
 
 Then the prompt should be displayed like:
 ```
-Adding user `teams' to group `sudo' ...
-Adding user teams to group sudo
+Adding user `drawio' to group `sudo' ...
+Adding user drawio to group sudo
 Done.
 bash
-teams@0b2fefbf45d2:~$
+launch draw.io by invoking 'drawio' at the bash prompt:
+drawio@0b2fefbf45d2:~$
 ```
 
-then type `teams`.
+then type `drawio`.
 
 
 > **Note**
@@ -72,8 +73,7 @@ The wrapper scripts volume mount the X11 and pulseaudio sockets in the launcher 
 
 When the image is launched the following directories are mounted as volumes
 
-- `${HOME}/.config/teams`
-- `${HOME}/.config/Microsoft`
+- `${HOME}/.config/draw.io`
 
 <!-- - `XDG_DOWNLOAD_DIR` or if it is missing `${HOME}/Downloads` -->
 <!-- - `XDG_DOCUMENTS_DIR` or if it is missing `${HOME}/Documents` -->
@@ -82,10 +82,10 @@ This makes sure that your profile details are stored on the host and files recei
 
 **Don't want to expose host's folders to Teams?**
 
-Add `TEAMS_HOME` environment variable to namespace all Teams folders:
+Add `DRAWIO_HOME` environment variable to namespace all Teams folders:
 
 ```sh
-export TEAMS_HOME=${HOME}/teams
+export DRAWIO_HOME=${HOME}/teams
 ```
 
 
@@ -98,7 +98,7 @@ To upgrade to newer releases:
   1. Download the updated Docker image:
 
   ```bash
-  docker pull olberger/docker-teams-linux:latest
+  docker pull olberger/docker-drawio-desktop-linux:latest
   ```
 
   2. Run `install` to make sure the host scripts are updated.
@@ -106,7 +106,7 @@ To upgrade to newer releases:
   ```bash
   docker run -it --rm \
     --volume /usr/local/bin:/target \
-    olberger/docker-teams-linux:latest install
+    olberger/docker-drawio-desktop-linux:latest install
   ```
 
 ## Uninstallation
@@ -114,6 +114,6 @@ To upgrade to newer releases:
 ```bash
 docker run -it --rm \
   --volume /usr/local/bin:/target \
-  olberger/docker-teams-linux:latest uninstall
+  olberger/docker-drawio-desktop-linux:latest uninstall
 ```
 
